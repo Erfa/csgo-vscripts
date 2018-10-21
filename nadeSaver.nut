@@ -15,15 +15,17 @@ printl(@"nadeSaver executed");
 printl(@"type to start: script nadeSetup()");
 
 function nadeSetup() {
-	SendToConsole(@"sv_cheats 1");
-	SendToConsole(@"ent_remove nadeTimer");
-    SendToConsole(@"ent_create logic_timer");
-	SendToConsole(@"ent_fire logic_timer addoutput ""targetname nadeTimer""");
-	SendToConsole(@"ent_fire nadeTimer addoutput ""refiretime 0.05""" );
-	SendToConsole(@"ent_fire nadeTimer enable" );
-	SendToConsole(@"ent_fire nadeTimer addoutput ""startdisabled 0""" );
-	SendToConsole(@"ent_fire nadeTimer addoutput ""UseRandomTime 0""" );
-	SendToConsole(@"ent_fire nadeTimer addoutput ""ontimer nadeTimer,RunScriptCode,nadeThink()""" );
+	if (!Entities.FindByName(null, "nadeTimer"))
+	{
+		local nadeTimer = Entities.CreateByClassname("logic_timer");
+		EntFireByHandle(nadeTimer, "addoutput", "targetname nadeTimer", 0.0, null, null);
+	}
+
+	EntFire("nadeTimer", "addoutput", "refiretime 0.05");
+	EntFire("nadeTimer", "enable");
+	EntFire("nadeTimer", "addoutput", "startdisabled 0");
+	EntFire("nadeTimer", "addoutput", "UseRandomTime 0");
+	EntFire("nadeTimer", "addoutput", "ontimer nadeTimer,RunScriptCode,nadeThink()");
 
     SendToConsole(@"bind """ + TOGGLE_BUTTON + @""" ""script toggleNadeSaving()""");
 
