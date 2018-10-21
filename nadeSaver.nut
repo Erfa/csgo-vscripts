@@ -15,17 +15,21 @@ printl(@"nadeSaver executed");
 printl(@"type to start: script nadeSetup()");
 
 function nadeSetup() {
-    if (!Entities.FindByName(null, "nadeTimer"))
-    {
-        local nadeTimer = Entities.CreateByClassname("logic_timer");
-        EntFireByHandle(nadeTimer, "addoutput", "targetname nadeTimer", 0.0, null, null);
-    }
+    local nadeTimer = Entities.FindByName(null, "nadeTimer");
 
-    EntFire("nadeTimer", "addoutput", "refiretime 0.05");
-    EntFire("nadeTimer", "enable");
-    EntFire("nadeTimer", "addoutput", "startdisabled 0");
-    EntFire("nadeTimer", "addoutput", "UseRandomTime 0");
-    EntFire("nadeTimer", "addoutput", "ontimer nadeTimer,RunScriptCode,nadeThink()");
+    if (!nadeTimer)
+    {
+        nadeTimer = Entities.CreateByClassname("logic_timer");
+
+        nadeTimer.__KeyValueFromFloat("refireTime", 0.05);
+        nadeTimer.__KeyValueFromInt("startDisabled", 0);
+        nadeTimer.__KeyValueFromInt("useRandomTime", 0);
+
+        EntFireByHandle(nadeTimer, "addoutput", "targetname nadeTimer", 0.0, null, null);
+
+        EntFire("nadeTimer", "addoutput", "ontimer nadeTimer,RunScriptCode,nadeThink()");
+        EntFire("nadeTimer", "enable");
+    }
 
     SendToConsole(@"bind """ + TOGGLE_BUTTON + @""" ""script toggleNadeSaving()""");
 
